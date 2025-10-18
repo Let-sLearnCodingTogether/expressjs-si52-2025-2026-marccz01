@@ -1,4 +1,6 @@
-import UserModel from "../expressjs-si52-2025-2026-marccz01/models/userModel";
+import {compare, hash} from "../utils/hashUtil.js";
+import { jwtSignUtil } from "../utils/jwtSignUtil.js";
+import UserModel from "../models/userModel.js"
 
 export const register = async (req, res) => {
     try {
@@ -12,7 +14,7 @@ export const register = async (req, res) => {
         await UserModel.create({
             username : registerData.username,
             email : registerData.email,
-            password : registerData.password
+            password : hashPassword
         })
 
         res.status(201).json({
@@ -27,43 +29,17 @@ export const register = async (req, res) => {
     }
 }
 
-export const login = async (req,res) => {
-    try {
-        const loginData = req.body
-
-        // Mencari user berdasarkan email
-        const user = await UserModel.findone({
-            email: loginData.email
+export const login = async (req, res) => {
+    const requestLogin = req.body
+        const user = UserModel.findOne({
+            email : requestLogin.email
         })
 
-        // Jika user tidak ditemukan
-        if (!user) {
-            res.status(404).json({
-                message: "User tidak di temukan",
-                data: null
-            })
-        }
-
-        // membandingkan password yang ada di dalam db dengan request
-        if(compare(user.password == loginData.password)) {
-            return res.status(200).json({
-                message: "Login berhasil",
-                data: {
-                    username : user.username,
-                    email : user.email,
-                    token : "TOKEN"
-                }
-            })
-        }
-        res.status(500).json({
-            message : e.message,
-            data : null
+        res.status(200).json({
+            message : "Login skses",
+            data : {
+                user : user,
+                token : jwtSignUtil(user)
+            }
         })
-
-    }  catch (error) {
-        res.status(500).json({
-            message : error,
-            data : null
-        })
-    }
 }

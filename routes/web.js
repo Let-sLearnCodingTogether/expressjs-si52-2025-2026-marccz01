@@ -1,6 +1,6 @@
 import express from "express"
-import * as profileController from "../../controller/profileController.js"
-import * as profileNelson from "../../controller/profileNelson.js"
+import * as profileController from "../controller/profileController.js"
+import * as profileNelson from "../controller/profileNelson.js"
 
 const web = express.Router()
 
