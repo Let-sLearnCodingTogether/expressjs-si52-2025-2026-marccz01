@@ -36,7 +36,7 @@ export const login = async (req, res) => {
         })
 
         res.status(200).json({
-            message : "Login skses",
+            message : "Login sukses",
             data : {
                 user : user,
                 token : jwtSignUtil(user)
