@@ -5,4 +5,4 @@ export const publicProfileson = (req, res) => {
         username : username, 
         bio : "Hiduplah Seperti Chinese Fine Shyt"
     })
-}
+}   

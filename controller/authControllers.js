@@ -30,16 +30,43 @@ export const register = async (req, res) => {
 }
 
 export const login = async (req, res) => {
-    const requestLogin = req.body
-        const user = UserModel.findOne({
-            email : requestLogin.email
+        try {
+            const loginData = req.body
+
+            //Mencari user berdasarkan email
+            const user = await UserModel.findOne({
+                email: loginData.email
+            })
+
+        //Jika user tidak ditemukan
+        if (!user) {
+            res.status(404).json({
+                message: "User tidak ditemukan",
+                data : null
+            })
+        }
+
+        //Membandingkan password yang ada didalam db dengan request
+        if (compare(loginData.password, user.password)){
+            return res.status(200).json({
+                message : "Login Berhasil",
+                data : {
+                    username : user.username,
+                    email : user.email,
+                    token : jwtSignUtil (user) // Untuk Melakukan Sign JWT TOKEN (Tambahkan jg di utils)
+                }
+            })
+        }
+
+        return res.status(401).json({
+            message : "Login Gagal",
+            data :null
         })
 
-        res.status(200).json({
-            message : "Login sukses",
-            data : {
-                user : user,
-                token : jwtSignUtil(user)
-            }
+    } catch (error) {
+        res.status(500).json({
+            message: error,
+            data: null
         })
+    }
 }
